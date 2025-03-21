@@ -1,5 +1,5 @@
-{  ... }: {
-  perSystem = {  pkgs, ... }:
+{ ... }: {
+  perSystem = { pkgs, ... }:
     let
       rust = pkgs.fenix.stable;
       rustToolchain = pkgs.fenix.combine [
@@ -15,8 +15,8 @@
     {
       devShells = {
         default = pkgs.mkShell {
-          packages = with pkgs; [ cargo-make pkg-config rustToolchain ] ++ [
-          ];
+          packages = with pkgs; [ cargo-make pkg-config nixd rustToolchain ];
+
           shellHook = ''
             export RUST_SRC_PATH="${rust.rust-src}/lib/rustlib/src/rust/library";
             export PATH=$HOME/.cargo/bin:$PATH
