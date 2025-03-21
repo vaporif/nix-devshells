@@ -15,7 +15,7 @@
     {
       devShells = {
         default = pkgs.mkShell {
-          packages = with pkgs; [ cargo-make pkg-config nixd rustToolchain ];
+          packages = with pkgs; [ cargo-make pkg-config taplo nixd rustToolchain ];
 
           shellHook = ''
             export RUST_SRC_PATH="${rust.rust-src}/lib/rustlib/src/rust/library";
