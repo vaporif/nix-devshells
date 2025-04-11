@@ -18,7 +18,6 @@
           packages = with pkgs; [
             cargo-make
             pkg-config
-            rustup
             taplo
             nixd
             rustToolchain
