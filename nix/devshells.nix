@@ -7,9 +7,9 @@
           "cargo"
           "clippy"
           "rustc"
+          "rustfmt"
+          "rust-analyzer"
         ])
-        pkgs.fenix.latest.rustfmt
-        pkgs.fenix.latest.rust-analyzer
       ];
     in
     {
