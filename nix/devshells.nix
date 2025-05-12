@@ -21,11 +21,13 @@
             taplo
             nixd
             rustToolchain
+            sccache
             vscode-extensions.vadimcn.vscode-lldb
           ];
 
           shellHook = ''
-            export RUST_SRC_PATH="${rust.rust-src}/lib/rustlib/src/rust/library";
+            export RUST_SRC_PATH="${rust.rust-src}/lib/rustlib/src/rust/library"
+            export RUSTC_WRAPPER="${pkgs.sccache}/bin/sccache"
             export PATH=$HOME/.cargo/bin:$PATH
           '';
         };
