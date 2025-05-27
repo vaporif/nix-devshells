@@ -22,7 +22,7 @@
             nixd
             rustToolchain
             sccache
-            vscode-extensions.vadimcn.vscode-lldb
+            vscode-extensions.vadimcn.vscode-lldb.adapter
           ];
 
           shellHook = ''
