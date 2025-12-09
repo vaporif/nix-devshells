@@ -1,5 +1,5 @@
 {
-  description = "Nix for rust development";
+  description = "Nix development shells";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
