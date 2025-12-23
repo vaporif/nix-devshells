@@ -1,1 +1,1 @@
-Nix devshell for generic Rust development
+Nix devshell for generic Go/Rust development
