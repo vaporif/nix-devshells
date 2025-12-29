@@ -19,6 +19,18 @@
         rustToolchain
         sccache
         vscode-extensions.vadimcn.vscode-lldb.adapter
+        cargo-watch
+        cargo-nextest
+        cargo-audit
+        bacon
+        cargo-expand
+        cargo-flamegraph
+        cargo-outdated
+        cargo-deny
+        cargo-bloat
+        cargo-udeps
+        cargo-criterion
+        cargo-mutants
       ];
 
       rustShellHook = ''
@@ -35,6 +47,8 @@
         golangci-lint
         gotools
         air
+        gotestsum
+        buf
       ];
 
       goShellHook = ''
