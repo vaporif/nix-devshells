@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Required environment variables (set by Nix wrapper):
-# PLATFORM_TOOLS, RUST_NIGHTLY, SBF_SDK_PATH
+# PLATFORM_TOOLS, RUST_IDL, SBF_SDK_PATH
 
 export SBF_SDK_PATH="${SBF_SDK_PATH:?SBF_SDK_PATH not set}"
 
@@ -22,11 +22,11 @@ setup_solana() {
   export CARGO="$PLATFORM_TOOLS/rust/bin/cargo"
 }
 
-setup_nightly() {
+setup_idl() {
   local new_path
   new_path=$(clean_rust_from_path | sed "s|$PLATFORM_TOOLS||g")
   unset RUSTC CARGO || true
-  export PATH="$RUST_NIGHTLY/bin:$new_path"
+  export PATH="$RUST_IDL/bin:$new_path"
   export RUST_TARGET_PATH="$PLATFORM_TOOLS/rust/lib/rustlib"
 }
 
@@ -94,7 +94,7 @@ run_build() {
 
   if has_idl_build_feature > /dev/null; then
     echo "Generating IDL with nightly toolchain..."
-    setup_nightly
+    setup_idl
 
     echo "Extracting IDL files..."
     mkdir -p target/idl
@@ -225,7 +225,7 @@ run_test() {
     return 1
   fi
 
-  setup_nightly
+  setup_idl
 
   echo "Running tests with nightly toolchain..."
   anchor test --skip-build "${extra_args[@]}"
@@ -240,7 +240,7 @@ run_unit_test() {
     return 1
   fi
 
-  setup_nightly
+  setup_idl
 
   echo "Running cargo test with nightly toolchain..."
   cargo test "${extra_args[@]}"

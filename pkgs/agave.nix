@@ -43,10 +43,10 @@
     (fenix.toolchainOf ({inherit channel sha256;} // lib.optionalAttrs (date != null) {inherit date;}))
     .withComponents ["cargo" "rustc" "rust-src"];
 
-  rustNightly = mkRustToolchain {
-    channel = "nightly";
-    date = "2025-01-01";
-    sha256 = "sha256-0Hcko7V5MUtH1RqrOyKQLg0ITjJjtyRPl2P+cJ1p1cY=";
+  # Rust 1.89.0+ required for IDL generation (Span::local_file was stabilized)
+  rustIdl = mkRustToolchain {
+    channel = "1.89.0";
+    sha256 = "sha256-+9FmLhAOezBZCOziO0Qct1NOrfpjNsXxc/8I0c7BdKE=";
   };
 
   rustForAgave = mkRustToolchain {
@@ -172,7 +172,7 @@
     postBuild = ''
       wrapProgram $out/bin/anchor-nix \
         --set PLATFORM_TOOLS "${platformTools}" \
-        --set RUST_NIGHTLY "${rustNightly}" \
+        --set RUST_IDL "${rustIdl}" \
         --set SBF_SDK_PATH "${sbfSdk}"
     '';
   };
@@ -180,7 +180,7 @@ in
   symlinkJoin {
     name = "agave-${version}";
     paths = [agave anchorNix anchor];
-    passthru = {inherit agave rustNightly;};
+    passthru = {inherit agave rustIdl;};
     meta =
       agave.meta
       // {
