@@ -16,16 +16,14 @@
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux" "aarch64-darwin"];
 
-      flake = {
-        templates = {
-          rust = {
-            path = ./templates/rust;
-            description = "Rust workspace with devshell";
-          };
-          solana = {
-            path = ./templates/solana;
-            description = "Solana Anchor workspace with devshell";
-          };
+      flake.templates = {
+        rust = {
+          path = ./templates/rust;
+          description = "Rust workspace with devshell";
+        };
+        solana = {
+          path = ./templates/solana;
+          description = "Solana Anchor workspace with devshell";
         };
       };
 
@@ -34,75 +32,14 @@
         pkgs,
         ...
       }: let
-        # Rust toolchain
-        rust = pkgs.fenix.stable;
-        rustToolchain = pkgs.fenix.combine [
-          (rust.withComponents [
-            "cargo"
-            "clippy"
-            "rustc"
-            "rustfmt"
-            "rust-analyzer"
-            "rust-src"
-          ])
-        ];
+        rust = import ./lib/rust.nix {inherit pkgs;};
+        go = import ./lib/go.nix {inherit pkgs;};
 
-        # Solana packages
         anchor = pkgs.callPackage ./pkgs/anchor.nix {};
         solana-agave = pkgs.callPackage ./pkgs/agave.nix {
           inherit (pkgs) fenix;
           inherit anchor;
         };
-
-        rustPackages = with pkgs; [
-          cargo-make
-          pkg-config
-          openssl
-          openssl.dev
-          taplo
-          rustToolchain
-          sccache
-          vscode-extensions.vadimcn.vscode-lldb.adapter
-          cargo-watch
-          cargo-nextest
-          cargo-audit
-          bacon
-          cargo-expand
-          cargo-flamegraph
-          cargo-outdated
-          cargo-deny
-          cargo-bloat
-          cargo-udeps
-          cargo-criterion
-          cargo-mutants
-        ];
-
-        rustEnv = {
-          RUST_SRC_PATH = "${rust.rust-src}/lib/rustlib/src/rust/library";
-          RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
-          NIX_LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [pkgs.stdenv.cc.cc];
-        };
-
-        rustShellHook = ''
-          export PATH=$HOME/.cargo/bin:$PATH
-        '';
-
-        goPackages = with pkgs; [
-          go
-          gopls
-          gofumpt
-          delve
-          golangci-lint
-          gotools
-          air
-          gotestsum
-          buf
-        ];
-
-        goShellHook = ''
-          export GOPATH=$HOME/go
-          export PATH=$GOPATH/bin:$PATH
-        '';
       in {
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
@@ -114,27 +51,26 @@
         devShells = {
           default =
             pkgs.mkShell {
-              packages = rustPackages ++ goPackages ++ [pkgs.nixd];
-              shellHook = rustShellHook + goShellHook;
+              packages = rust.packages ++ go.packages ++ [pkgs.nixd];
+              shellHook = rust.shellHook + go.shellHook;
             }
-            // rustEnv;
+            // rust.env;
 
           rust =
             pkgs.mkShell {
-              packages = rustPackages ++ [pkgs.nixd];
-              shellHook = rustShellHook;
+              packages = rust.packages ++ [pkgs.nixd];
+              shellHook = rust.shellHook;
             }
-            // rustEnv;
+            // rust.env;
 
           go = pkgs.mkShell {
-            packages = goPackages ++ [pkgs.nixd];
-            shellHook = goShellHook;
+            packages = go.packages ++ [pkgs.nixd];
+            shellHook = go.shellHook;
           };
 
-          solana = pkgs.mkShell (
-            {
+          solana = pkgs.mkShell ({
               packages =
-                rustPackages
+                rust.packages
                 ++ [
                   pkgs.nixd
                   pkgs.gawk
@@ -145,11 +81,9 @@
                   pkgs.apple-sdk_15
                 ];
               shellHook =
-                rustShellHook
+                rust.shellHook
                 + ''
                   export PATH="${solana-agave}/bin:$PATH"
-
-                  # Darwin SDK workaround
                   if [[ "$OSTYPE" == "darwin"* ]]; then
                     unset DEVELOPER_DIR_FOR_TARGET
                     unset NIX_APPLE_SDK_VERSION_FOR_TARGET
@@ -157,8 +91,7 @@
                   fi
                 '';
             }
-            // rustEnv
-          );
+            // rust.env);
         };
       };
     };
