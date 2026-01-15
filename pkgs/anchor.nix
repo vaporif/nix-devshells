@@ -5,7 +5,6 @@
   pkg-config,
   openssl,
   perl,
-  stdenv,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "anchor";
