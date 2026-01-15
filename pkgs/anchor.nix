@@ -26,9 +26,7 @@ rustPlatform.buildRustPackage rec {
     pkg-config
   ];
 
-  buildInputs =
-    [openssl]
-    ++ lib.optionals stdenv.isDarwin [];
+  buildInputs = [openssl];
 
   checkFlags = [
     "--skip=tests::test_check_and_get_full_commit_when_full_commit"
