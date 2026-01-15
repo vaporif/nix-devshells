@@ -11,6 +11,7 @@ target/
 
 
 # Rust
+target
 bacon.toml
 .bacon-locations
 
