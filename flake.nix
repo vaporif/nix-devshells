@@ -24,7 +24,11 @@
         templates = {
           rust = {
             path = ./templates/rust;
-            description = "Rust project with devshell";
+            description = "Rust workspace with devshell";
+          };
+          solana = {
+            path = ./templates/solana;
+            description = "Solana Anchor workspace with devshell";
           };
         };
       };

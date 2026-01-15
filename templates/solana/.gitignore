@@ -1,0 +1,19 @@
+# Rust
+target/
+**/*.rs.bk
+
+# Solana
+test-ledger/
+.anchor/
+
+# Node
+node_modules/
+
+# IDE
+.idea/
+*.iml
+*.code-workspace
+.vscode/
+
+# OS
+.DS_Store

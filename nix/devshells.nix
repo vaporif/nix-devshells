@@ -12,6 +12,13 @@
       ])
     ];
 
+    # Solana packages
+    anchor = pkgs.callPackage ../pkgs/solana/anchor.nix {};
+    solana-agave = pkgs.callPackage ../pkgs/solana/agave.nix {
+      inherit (pkgs) fenix;
+      inherit anchor;
+    };
+
     rustPackages = with pkgs; [
       cargo-make
       pkg-config
@@ -81,6 +88,33 @@
         packages = goPackages ++ [pkgs.nixd];
         shellHook = goShellHook;
       };
+
+      solana = pkgs.mkShell ({
+          packages =
+            rustPackages
+            ++ [
+              pkgs.nixd
+              pkgs.gawk
+              pkgs.just
+              solana-agave
+            ]
+            ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+              pkgs.apple-sdk_15
+            ];
+          shellHook =
+            rustShellHook
+            + ''
+              export PATH="${solana-agave}/bin:$PATH"
+
+              # Darwin SDK workaround
+              if [[ "$OSTYPE" == "darwin"* ]]; then
+                unset DEVELOPER_DIR_FOR_TARGET
+                unset NIX_APPLE_SDK_VERSION_FOR_TARGET
+                unset SDKROOT_FOR_TARGET
+              fi
+            '';
+        }
+        // rustEnv);
     };
   };
 }
