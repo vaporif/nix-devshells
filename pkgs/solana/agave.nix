@@ -21,15 +21,11 @@
     "cargo-build-sbf"
     "cargo-test-sbf"
     "solana"
-    "solana-bench-tps"
     "solana-faucet"
+    "solana-genesis"
     "solana-gossip"
     "solana-keygen"
-    "solana-log-analyzer"
-    "solana-net-shaper"
     "solana-test-validator"
-    "solana-genesis"
-    "agave-ledger-tool"
     "agave-install"
     "agave-validator"
   ],
@@ -38,8 +34,8 @@
   inherit (stdenv) hostPlatform isLinux;
 
   versions = {
-    agave = "2.2.17";
-    platformTools = "v1.48";
+    agave = "3.1.6";
+    platformTools = "v1.52";
   };
 
   # Create nightly toolchain from fenix (used for IDL generation)
@@ -52,19 +48,19 @@
   platformConfig = {
     x86_64-darwin = {
       archive = "platform-tools-osx-x86_64.tar.bz2";
-      sha256 = "sha256-vLTtCmUkxxkd8KKQa8qpQ7kb5S52EI/DVllgtu8zM2I=";
+      sha256 = "sha256-HdTysfe1MWwvGJjzfHXtSV7aoIMzM0kVP+lV5Wg3kdE=";
     };
     aarch64-darwin = {
       archive = "platform-tools-osx-aarch64.tar.bz2";
-      sha256 = "sha256-eZ5M/O444icVXIP7IpT5b5SoQ9QuAcA1n7cSjiIW0t0=";
+      sha256 = "sha256-Fyffsx6DPOd30B5wy0s869JrN2vwnYBSfwJFfUz2/QA=";
     };
     x86_64-linux = {
       archive = "platform-tools-linux-x86_64.tar.bz2";
-      sha256 = "sha256-qdMVf5N9X2+vQyGjWoA14PgnEUpmOwFQ20kuiT7CdZc=";
+      sha256 = "sha256-izhh6T2vCF7BK2XE+sN02b7EWHo94Whx2msIqwwdkH4=";
     };
     aarch64-linux = {
       archive = "platform-tools-linux-aarch64.tar.bz2";
-      sha256 = "sha256-rsYCIiL3ueJHkDZkhLzGz59mljd7uY9UHIhp4vMecPI=";
+      sha256 = "sha256-sfhbLsR+9tUPZoPjUUv0apUmlQMVUXjN+0i9aUszH5g=";
     };
   };
 
@@ -80,7 +76,7 @@
   # Download SBF SDK archive from Agave releases
   sbfSdkArchive = fetchurl {
     url = "https://github.com/anza-xyz/agave/releases/download/v${versions.agave}/sbf-sdk.tar.bz2";
-    sha256 = "18nh745djcnkbs0jz7bkaqrlwkbi5x28xdnr2lkgrpybwmdfg06s";
+    sha256 = "sha256-4iV6NhfisZuLlwwhIi4OIbxj8Nzx+EFcG5cmK36fFAc=";
   };
 
   # SBF SDK derivation
@@ -142,16 +138,15 @@
     };
   };
 
-  # Use Rust nightly version that's compatible with Agave version (via fenix)
-  nightlyToolchain = fenix.toolchainOf {
-    channel = "nightly";
-    date = "2024-11-15";
-    sha256 = "sha256-1uC3iVKIjZAtQ57qtpGIfvCPl1MTdTfWibjB37VWFPg=";
+  # Use Rust 1.86.0 as specified in agave's rust-toolchain.toml
+  rust186 = fenix.toolchainOf {
+    channel = "1.86.0";
+    sha256 = "sha256-X/4ZBHO3iW0fOenQ3foEvscgAPJYl2abspaBThDOukI=";
   };
-  rustForAgave = fenix.combine [
-    nightlyToolchain.cargo
-    nightlyToolchain.rustc
-    nightlyToolchain.rust-src
+  rustForAgave = rust186.withComponents [
+    "cargo"
+    "rustc"
+    "rust-src"
   ];
 
   agave =
@@ -168,11 +163,11 @@
         owner = "anza-xyz";
         repo = "agave";
         rev = "v${versions.agave}";
-        hash = "sha256-Xbv00cfl40EctQhjIcysnkVze6aP5z2SKpzA2hWn54o=";
+        hash = "sha256-pIvShCRy1OQcFwSkXZ/lLF+2LoAd2wyAQfyyUtj9La0=";
         fetchSubmodules = true;
       };
 
-      cargoHash = "sha256-DEMbBkQPpeChmk9VtHq7asMrl5cgLYqNC/vGwrmdz3A=";
+      cargoHash = "sha256-eendPKd1oZmVqWAGWxm+AayLDm5w9J6/gSEPUXJZj88=";
 
       cargoBuildFlags = map (n: "--bin=${n}") solanaPkgs;
 
