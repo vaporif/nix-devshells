@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
     flake-parts.url = "github:hercules-ci/flake-parts";
     fenix.url = "github:nix-community/fenix";
     fenix.inputs.nixpkgs.follows = "nixpkgs";
@@ -15,9 +14,6 @@
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
-      imports = [
-        ./nix/devshells.nix
-      ];
       systems = ["x86_64-linux" "aarch64-darwin"];
 
       flake = {
@@ -37,16 +33,133 @@
         system,
         pkgs,
         ...
-      }: {
-        # per-system attributes can be defined here. the self' and inputs'
-        # module parameters provide easy access to attributes of the same
-        # system.
+      }: let
+        # Rust toolchain
+        rust = pkgs.fenix.stable;
+        rustToolchain = pkgs.fenix.combine [
+          (rust.withComponents [
+            "cargo"
+            "clippy"
+            "rustc"
+            "rustfmt"
+            "rust-analyzer"
+            "rust-src"
+          ])
+        ];
+
+        # Solana packages
+        anchor = pkgs.callPackage ./pkgs/anchor.nix {};
+        solana-agave = pkgs.callPackage ./pkgs/agave.nix {
+          inherit (pkgs) fenix;
+          inherit anchor;
+        };
+
+        rustPackages = with pkgs; [
+          cargo-make
+          pkg-config
+          openssl
+          openssl.dev
+          taplo
+          rustToolchain
+          sccache
+          vscode-extensions.vadimcn.vscode-lldb.adapter
+          cargo-watch
+          cargo-nextest
+          cargo-audit
+          bacon
+          cargo-expand
+          cargo-flamegraph
+          cargo-outdated
+          cargo-deny
+          cargo-bloat
+          cargo-udeps
+          cargo-criterion
+          cargo-mutants
+        ];
+
+        rustEnv = {
+          RUST_SRC_PATH = "${rust.rust-src}/lib/rustlib/src/rust/library";
+          RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
+          NIX_LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [pkgs.stdenv.cc.cc];
+        };
+
+        rustShellHook = ''
+          export PATH=$HOME/.cargo/bin:$PATH
+        '';
+
+        goPackages = with pkgs; [
+          go
+          gopls
+          gofumpt
+          delve
+          golangci-lint
+          gotools
+          air
+          gotestsum
+          buf
+        ];
+
+        goShellHook = ''
+          export GOPATH=$HOME/go
+          export PATH=$GOPATH/bin:$PATH
+        '';
+      in {
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
           overlays = [fenix.overlays.default];
         };
 
         formatter = pkgs.nixpkgs-fmt;
+
+        devShells = {
+          default =
+            pkgs.mkShell {
+              packages = rustPackages ++ goPackages ++ [pkgs.nixd];
+              shellHook = rustShellHook + goShellHook;
+            }
+            // rustEnv;
+
+          rust =
+            pkgs.mkShell {
+              packages = rustPackages ++ [pkgs.nixd];
+              shellHook = rustShellHook;
+            }
+            // rustEnv;
+
+          go = pkgs.mkShell {
+            packages = goPackages ++ [pkgs.nixd];
+            shellHook = goShellHook;
+          };
+
+          solana = pkgs.mkShell (
+            {
+              packages =
+                rustPackages
+                ++ [
+                  pkgs.nixd
+                  pkgs.gawk
+                  pkgs.just
+                  solana-agave
+                ]
+                ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+                  pkgs.apple-sdk_15
+                ];
+              shellHook =
+                rustShellHook
+                + ''
+                  export PATH="${solana-agave}/bin:$PATH"
+
+                  # Darwin SDK workaround
+                  if [[ "$OSTYPE" == "darwin"* ]]; then
+                    unset DEVELOPER_DIR_FOR_TARGET
+                    unset NIX_APPLE_SDK_VERSION_FOR_TARGET
+                    unset SDKROOT_FOR_TARGET
+                  fi
+                '';
+            }
+            // rustEnv
+          );
+        };
       };
     };
 }
