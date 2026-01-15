@@ -9,20 +9,37 @@
     fenix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ flake-parts, fenix, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
+  outputs = inputs @ {
+    flake-parts,
+    fenix,
+    ...
+  }:
+    flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         ./nix/devshells.nix
       ];
-      systems = [ "x86_64-linux" "aarch64-darwin" ];
+      systems = ["x86_64-linux" "aarch64-darwin"];
 
-      perSystem = { system, pkgs, ... }: {
+      flake = {
+        templates = {
+          rust = {
+            path = ./templates/rust;
+            description = "Rust project with devshell";
+          };
+        };
+      };
+
+      perSystem = {
+        system,
+        pkgs,
+        ...
+      }: {
         # per-system attributes can be defined here. the self' and inputs'
         # module parameters provide easy access to attributes of the same
         # system.
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
-          overlays = [ fenix.overlays.default ];
+          overlays = [fenix.overlays.default];
         };
 
         formatter = pkgs.nixpkgs-fmt;
