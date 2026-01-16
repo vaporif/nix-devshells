@@ -1,0 +1,87 @@
+set dotenv-load
+
+# Detect which anchor command is available
+anchor_cmd := `command -v anchor-nix >/dev/null 2>&1 && echo "anchor-nix" || echo "anchor"`
+
+# Default task lists all available tasks
+default:
+    just --list
+
+# Build Solana Anchor programs
+[group('build')]
+build *args:
+    @echo "Building Solana programs..."
+    @echo "Using {{anchor_cmd}}"
+    {{anchor_cmd}} build {{args}}
+
+# Build without IDL generation
+[group('build')]
+build-no-idl *args:
+    {{anchor_cmd}} build --no-idl {{args}}
+
+# Run Solana Anchor e2e tests
+[group('test')]
+test *args:
+    @echo "Running Solana Anchor tests..."
+    @echo "Using {{anchor_cmd}}"
+    {{anchor_cmd}} test {{args}}
+
+# Run Solana unit tests
+[group('test')]
+unit-test *args:
+    @echo "Running Solana unit tests..."
+    @echo "Using {{anchor_cmd}}"
+    @if [ "{{anchor_cmd}}" = "anchor-nix" ]; then \
+        anchor-nix unit-test {{args}}; \
+    else \
+        anchor build && cargo test {{args}}; \
+    fi
+
+# Lint Solana code
+[group('lint')]
+lint:
+    @echo "Linting Solana code..."
+    cargo fmt --all -- --check
+    cargo clippy --all-targets --all-features -- -D warnings
+
+# Format code
+[group('lint')]
+fmt:
+    cargo fmt --all
+
+# Manage program keypairs
+[group('keys')]
+keys *args:
+    {{anchor_cmd}} keys {{args}}
+
+# Sync keypairs with declare_id! macros in program source
+[group('keys')]
+sync-keys:
+    @echo "Syncing program keypairs..."
+    {{anchor_cmd}} keys sync
+
+# Deploy programs
+[group('deploy')]
+deploy *args:
+    {{anchor_cmd}} deploy {{args}}
+
+# Clean build artifacts
+[group('clean')]
+clean:
+    cargo clean
+    rm -rf target/deploy target/idl
+
+# Start local validator
+[group('localnet')]
+localnet:
+    solana-test-validator --reset
+
+# Check SOL balance
+[group('localnet')]
+balance:
+    solana balance
+
+# Airdrop SOL (localnet)
+[group('localnet')]
+airdrop amount="2":
+    solana airdrop {{amount}}
