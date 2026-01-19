@@ -1,0 +1,19 @@
+[default]
+extend-ignore-re = [
+  # Hex strings
+  "[0-9a-fA-F]{32,}",
+  # Base58/64 encoded strings
+  "[A-Za-z0-9+/=]{40,}",
+]
+
+[default.extend-words]
+# Add allowed words here
+sbf = "sbf"  # Solana BPF format
+
+[files]
+extend-exclude = [
+  "*.lock",
+  "flake.lock",
+  ".git/",
+  "target/",
+]
