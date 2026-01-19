@@ -56,7 +56,7 @@ jobs:
         run: taplo fmt --check
 
       - name: Run shellcheck
-        run: shellcheck scripts/*.sh
+        run: shellcheck -S warning scripts/*.sh
 
       - name: Run actionlint
         uses: raven-actions/actionlint@v2

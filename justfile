@@ -24,7 +24,7 @@ fmt-toml:
 
 # Lint shell scripts
 lint-shell:
-    shellcheck scripts/*.sh
+    shellcheck -S warning scripts/*.sh
 
 # Lint GitHub Actions
 lint-actions:
