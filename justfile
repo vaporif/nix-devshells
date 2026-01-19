@@ -43,8 +43,7 @@ setup-hooks:
 
 # Build and push to cachix
 cache:
-    nix build .#devShells.aarch64-darwin.default
-    nix build .#devShells.aarch64-darwin.rust
-    nix build .#devShells.aarch64-darwin.go
-    nix build .#devShells.aarch64-darwin.solana
-    cachix push vaporif ./result
+    nix build .#devShells.aarch64-darwin.default && cachix push vaporif ./result
+    nix build .#devShells.aarch64-darwin.rust && cachix push vaporif ./result
+    nix build .#devShells.aarch64-darwin.go && cachix push vaporif ./result
+    nix build .#devShells.aarch64-darwin.solana && cachix push vaporif ./result
