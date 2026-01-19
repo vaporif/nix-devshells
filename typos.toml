@@ -8,12 +8,7 @@ extend-ignore-re = [
 
 [default.extend-words]
 # Add allowed words here
-sbf = "sbf"  # Solana BPF format
+sbf = "sbf" # Solana BPF format
 
 [files]
-extend-exclude = [
-  "*.lock",
-  "flake.lock",
-  ".git/",
-  "target/",
-]
+extend-exclude = ["*.lock", "flake.lock", ".git/", "target/"]
