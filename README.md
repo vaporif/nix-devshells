@@ -44,6 +44,15 @@ anchor-nix unit-test   # Build + cargo test
 anchor-nix deploy      # Deploy programs
 ```
 
+## Development
+
+```bash
+just check        # Run all linters
+just fmt          # Format nix + toml
+just cache        # Build + push to cachix
+just setup-hooks  # Enable git hooks
+```
+
 ## Structure
 
 ```
