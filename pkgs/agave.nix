@@ -137,8 +137,11 @@
 
       LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
 
-      # GCC 15 requires explicit cstdint include (rocksdb build fix)
-      NIX_CFLAGS_COMPILE = lib.optionalString stdenv.isLinux "-include cstdint";
+      # GCC 15 requires explicit cstdint include for C++ (rocksdb build fix)
+      # Use CXXFLAGS not NIX_CFLAGS_COMPILE to avoid breaking C builds (blake3)
+      preBuild = lib.optionalString stdenv.isLinux ''
+        export CXXFLAGS="-include cstdint ''${CXXFLAGS:-}"
+      '';
 
       BINDGEN_EXTRA_CLANG_ARGS = toString ([
           "-isystem ${llvmPackages.libclang.lib}/lib/clang/${lib.getVersion llvmPackages.clang}/include"
