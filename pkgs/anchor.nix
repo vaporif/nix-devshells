@@ -1,10 +1,12 @@
 {
   lib,
+  stdenv,
   rustPlatform,
   fetchFromGitHub,
   pkg-config,
   openssl,
   perl,
+  udev,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "anchor";
@@ -25,7 +27,7 @@ rustPlatform.buildRustPackage rec {
     pkg-config
   ];
 
-  buildInputs = [openssl];
+  buildInputs = [openssl] ++ lib.optionals stdenv.hostPlatform.isLinux [udev];
 
   checkFlags = [
     "--skip=tests::test_check_and_get_full_commit_when_full_commit"
