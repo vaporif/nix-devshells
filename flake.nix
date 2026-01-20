@@ -51,20 +51,20 @@
         devShells = {
           default =
             pkgs.mkShell {
-              packages = rust.packages ++ go.packages ++ [pkgs.nixd];
+              packages = rust.packages ++ go.packages ++ [pkgs.nixd pkgs.vulnix];
               shellHook = rust.shellHook + go.shellHook;
             }
             // rust.env;
 
           rust =
             pkgs.mkShell {
-              packages = rust.packages ++ [pkgs.nixd];
+              packages = rust.packages ++ [pkgs.nixd pkgs.vulnix];
               shellHook = rust.shellHook;
             }
             // rust.env;
 
           go = pkgs.mkShell {
-            packages = go.packages ++ [pkgs.nixd];
+            packages = go.packages ++ [pkgs.nixd pkgs.vulnix];
             shellHook = go.shellHook;
           };
 
@@ -73,6 +73,7 @@
                 rust.packages
                 ++ [
                   pkgs.nixd
+                  pkgs.vulnix
                   pkgs.gawk
                   pkgs.just
                   solana-agave

@@ -3,7 +3,18 @@ default:
     @just --list
 
 # Run all checks
-check: lint-nix lint-toml lint-shell lint-actions check-typos
+check: lint-nix lint-toml lint-shell lint-actions check-typos check-vulns
+
+# Scan for vulnerabilities
+check-vulns:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    system=$(nix eval --impure --raw --expr 'builtins.currentSystem')
+    for shell in default rust go solana; do
+        echo "=== Scanning $shell shell ==="
+        nix build ".#devShells.${system}.${shell}" -o "result-${shell}"
+        vulnix "./result-${shell}" --whitelist vulnix-whitelist.toml
+    done
 
 # Lint nix files
 lint-nix:
@@ -43,7 +54,9 @@ setup-hooks:
 
 # Build and push to cachix
 cache:
-    nix build .#devShells.aarch64-darwin.default && cachix push vaporif ./result
-    nix build .#devShells.aarch64-darwin.rust && cachix push vaporif ./result
-    nix build .#devShells.aarch64-darwin.go && cachix push vaporif ./result
-    nix build .#devShells.aarch64-darwin.solana && cachix push vaporif ./result
+    #!/usr/bin/env bash
+    set -euo pipefail
+    system=$(nix eval --impure --raw --expr 'builtins.currentSystem')
+    for shell in default rust go solana; do
+        nix build ".#devShells.${system}.${shell}" && cachix push vaporif ./result
+    done

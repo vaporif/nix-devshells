@@ -1,0 +1,83 @@
+# Vulnix whitelist - false positives and accepted risks
+# https://github.com/nix-community/vulnix#whitelist
+
+# False positives - name collisions (different software with same name)
+[git]
+comment = "Jenkins Git plugin CVEs, not git VCS"
+cve = [
+  "CVE-2022-36882",
+  "CVE-2022-30947",
+  "CVE-2022-36883",
+  "CVE-2022-38663",
+  "CVE-2021-21684",
+  "CVE-2022-36884",
+]
+
+[mercurial]
+comment = "Jenkins Mercurial plugin CVE, not hg VCS"
+cve = ["CVE-2022-43410"]
+
+[dash]
+comment = "Plotly Dash (Python web framework) CVE, not dash shell"
+cve = ["CVE-2024-21485"]
+
+[rubygems]
+comment = "RubyGems.org website auth bypass, not gem CLI tool"
+cve = ["CVE-2022-36073"]
+
+[ninja]
+comment = "ITRS monitor-ninja SQL injection, not ninja build system"
+cve = ["CVE-2021-4336"]
+
+[go]
+comment = "ecies/go ECDH library CVE, not Go compiler; bootstrap CVEs are build-time only"
+cve = ["CVE-2023-49292", "CVE-2025-61729", "CVE-2025-61727", "CVE-2025-0913"]
+
+[zlib]
+comment = "untgz demo utility in contrib/, not core zlib compression library"
+cve = ["CVE-2026-22184", "CVE-2023-6992"]
+
+# Build-time only (not in runtime closure)
+[lapack]
+comment = "Build-time numerical library; out-of-bounds read requires crafted input"
+cve = ["CVE-2021-4048"]
+
+# Accepted risks - real CVEs with limited impact in devshell context
+[clang]
+comment = "Arm TrustZone-M secure state leak; only affects Cortex-M firmware builds"
+cve = ["CVE-2024-7883"]
+
+[curl]
+comment = "Real CVEs fixed in 8.18.0; limited impact: QUIC pinning + rare redirect scenarios"
+cve = [
+  "CVE-2025-13034",
+  "CVE-2025-14524",
+  "CVE-2025-14819",
+  "CVE-2025-15079",
+  "CVE-2025-15224",
+]
+
+[lua]
+comment = "DoS via crafted script; only runs trusted dev configs"
+cve = ["CVE-2021-43519"]
+
+# Haskell package name collisions (solana shell dependencies)
+[Diff]
+comment = "Haskell Diff library, CVE details unknown/unrelated"
+cve = ["CVE-2024-13278"]
+
+[ShellCheck]
+comment = "Haskell ShellCheck CLI, CVE is for VS Code extension"
+cve = ["CVE-2021-28794"]
+
+[async]
+comment = "Haskell async library, CVE is for npm async package"
+cve = ["CVE-2021-43138"]
+
+[hedgehog]
+comment = "Haskell property testing library, CVE is for dns-stats/hedgehog"
+cve = ["CVE-2021-4276"]
+
+[stringbuilder]
+comment = "Haskell stringbuilder, CVE is for node-stringbuilder (Node.js)"
+cve = ["CVE-2024-21524"]
