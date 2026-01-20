@@ -81,3 +81,24 @@ cve = ["CVE-2021-4276"]
 [stringbuilder]
 comment = "Haskell stringbuilder, CVE is for node-stringbuilder (Node.js)"
 cve = ["CVE-2024-21524"]
+
+# Build-time toolchain
+[binutils]
+comment = "Memory leaks in objdump with crafted input; build-time only, Debian marks unimportant"
+cve = ["CVE-2025-3198", "CVE-2025-8224", "CVE-2025-8225", "CVE-2025-1153"]
+
+[busybox]
+comment = "Nix sandbox internal use only; tar UI spoofing + wget HTTP splitting, not user-facing"
+cve = ["CVE-2025-60876", "CVE-2025-46394"]
+
+[gcc]
+comment = "DISPUTED: -fstack-protector bypass on AArch64 only; doesn't create vulns, reduces protection"
+cve = ["CVE-2023-4039"]
+
+[glibc]
+comment = "strcmp/strncmp bugs only on IBM Power10 CPUs; not applicable to x86_64/aarch64"
+cve = ["CVE-2025-5702", "CVE-2025-5745"]
+
+[libmicrohttpd]
+comment = "NULL deref + heap overflow; Nix daemon HTTP API binds localhost only, requires local access"
+cve = ["CVE-2025-59777", "CVE-2025-62689"]
