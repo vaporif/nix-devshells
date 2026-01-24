@@ -15,6 +15,8 @@
     systems = ["x86_64-linux" "aarch64-darwin"];
     forAllSystems = nixpkgs.lib.genAttrs systems;
   in {
+    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+
     devShells = forAllSystems (system: {
       default = devshells.devShells.${system}.solana;
     });

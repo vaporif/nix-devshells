@@ -40,42 +40,42 @@
           inherit (pkgs) fenix;
           inherit anchor;
         };
+
+        commonPackages = with pkgs; [nixd vulnix alejandra just nix-output-monitor];
       in {
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
           overlays = [fenix.overlays.default];
         };
 
-        formatter = pkgs.nixpkgs-fmt;
+        formatter = pkgs.alejandra;
 
         devShells = {
           default =
             pkgs.mkShell {
-              packages = rust.packages ++ go.packages ++ [pkgs.nixd pkgs.vulnix];
+              packages = rust.packages ++ go.packages ++ commonPackages;
               shellHook = rust.shellHook + go.shellHook;
             }
             // rust.env;
 
           rust =
             pkgs.mkShell {
-              packages = rust.packages ++ [pkgs.nixd pkgs.vulnix];
+              packages = rust.packages ++ commonPackages;
               shellHook = rust.shellHook;
             }
             // rust.env;
 
           go = pkgs.mkShell {
-            packages = go.packages ++ [pkgs.nixd pkgs.vulnix];
+            packages = go.packages ++ commonPackages;
             shellHook = go.shellHook;
           };
 
           solana = pkgs.mkShell ({
               packages =
                 rust.packages
+                ++ commonPackages
                 ++ [
-                  pkgs.nixd
-                  pkgs.vulnix
                   pkgs.gawk
-                  pkgs.just
                   solana-agave
                 ]
                 ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
