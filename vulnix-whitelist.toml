@@ -82,6 +82,25 @@ cve = ["CVE-2021-4276"]
 comment = "Haskell stringbuilder, CVE is for node-stringbuilder (Node.js)"
 cve = ["CVE-2024-21524"]
 
+[safe]
+comment = "Haskell safe library, CVEs are for F-Secure SAFE security product"
+cve = [
+  "CVE-2022-38164",
+  "CVE-2022-47524",
+  "CVE-2021-40835",
+  "CVE-2021-40834",
+  "CVE-2021-44751",
+  "CVE-2022-28868",
+  "CVE-2022-28869",
+  "CVE-2022-28870",
+  "CVE-2022-28872",
+  "CVE-2022-28873",
+  "CVE-2021-33594",
+  "CVE-2021-33595",
+  "CVE-2021-33596",
+  "CVE-2022-38163",
+]
+
 # Build-time toolchain
 [binutils]
 comment = "Memory leaks in objdump with crafted input; build-time only, Debian marks unimportant"
