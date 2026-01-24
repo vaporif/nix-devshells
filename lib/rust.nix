@@ -32,6 +32,7 @@ in {
     cargo-udeps
     cargo-criterion
     cargo-mutants
+    cargo-machete
   ];
 
   env = {
