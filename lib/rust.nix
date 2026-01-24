@@ -33,6 +33,7 @@ in {
     cargo-criterion
     cargo-mutants
     cargo-machete
+    tokio-console
   ];
 
   env = {
