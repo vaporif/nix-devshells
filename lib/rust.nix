@@ -33,7 +33,10 @@ in {
     cargo-criterion
     cargo-mutants
     cargo-machete
+    cargo-pgo
     tokio-console
+    samply
+    grpcurl
   ];
 
   env = {
