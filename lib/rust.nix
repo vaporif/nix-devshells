@@ -10,6 +10,22 @@
       "rust-src"
     ])
   ];
+
+  # Wrap codelldb only on Darwin, auto-detect debugserver path
+  codelldb =
+    if pkgs.stdenv.isDarwin
+    then
+      pkgs.writeShellScriptBin "codelldb" ''
+        if [[ -z "$LLDB_DEBUGSERVER_PATH" ]]; then
+          if [[ -x "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/Resources/debugserver" ]]; then
+            export LLDB_DEBUGSERVER_PATH="/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/Resources/debugserver"
+          elif [[ -x "/Library/Developer/CommandLineTools/Library/PrivateFrameworks/LLDB.framework/Versions/A/Resources/debugserver" ]]; then
+            export LLDB_DEBUGSERVER_PATH="/Library/Developer/CommandLineTools/Library/PrivateFrameworks/LLDB.framework/Versions/A/Resources/debugserver"
+          fi
+        fi
+        exec ${pkgs.vscode-extensions.vadimcn.vscode-lldb.adapter}/bin/codelldb "$@"
+      ''
+    else pkgs.vscode-extensions.vadimcn.vscode-lldb.adapter;
 in {
   packages = with pkgs; [
     cargo-make
@@ -19,7 +35,7 @@ in {
     taplo
     toolchain
     sccache
-    vscode-extensions.vadimcn.vscode-lldb.adapter
+    codelldb
     cargo-watch
     cargo-nextest
     cargo-audit
