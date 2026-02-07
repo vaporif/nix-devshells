@@ -34,6 +34,7 @@
       }: let
         rust = import ./lib/rust.nix {inherit pkgs;};
         go = import ./lib/go.nix {inherit pkgs;};
+        solidity = import ./lib/solidity.nix {inherit pkgs;};
 
         anchor = pkgs.callPackage ./pkgs/anchor.nix {};
         solana-agave = pkgs.callPackage ./pkgs/agave.nix {
@@ -68,6 +69,11 @@
           go = pkgs.mkShell {
             packages = go.packages ++ commonPackages;
             shellHook = go.shellHook;
+          };
+
+          solidity = pkgs.mkShell {
+            packages = solidity.packages ++ commonPackages;
+            shellHook = solidity.shellHook;
           };
 
           solana = pkgs.mkShell ({
