@@ -5,8 +5,6 @@
     foundry
     slither-analyzer
     nodejs_22
-    nodePackages.npm
-    nodePackages.prettier
   ];
 
   shellHook = ''
