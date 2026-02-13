@@ -4,7 +4,7 @@
     solc-select
     foundry
     slither-analyzer
-    nodejs_24
+    nodejs_22
     nodePackages.npm
     nodePackages.prettier
   ];
