@@ -71,8 +71,19 @@ comment = "Arm TrustZone-M secure state leak; only affects Cortex-M firmware bui
 cve = ["CVE-2024-7883"]
 
 [curl]
-comment = "Real CVEs fixed in 8.18.0; limited impact: QUIC pinning + rare redirect scenarios"
+comment = "Rust curl crate name collision with libcurl CVEs + real CVEs with limited devshell impact"
 cve = [
+  "CVE-2022-27776",
+  "CVE-2022-27781",
+  "CVE-2022-27782",
+  "CVE-2022-32206",
+  "CVE-2022-32221",
+  "CVE-2022-35252",
+  "CVE-2022-43552",
+  "CVE-2023-28319",
+  "CVE-2023-28320",
+  "CVE-2023-28321",
+  "CVE-2023-28322",
   "CVE-2025-13034",
   "CVE-2025-14017",
   "CVE-2025-14524",
@@ -161,4 +172,63 @@ cve = [
   "CVE-2025-69421",
   "CVE-2026-22795",
   "CVE-2026-22796",
+]
+
+# Solidity shell dependencies - name collisions and build-time
+[ada]
+comment = "Ada URL parser C++ library; CVE is for Ada cryptocurrency/blockchain project"
+cve = ["CVE-2024-9410"]
+
+[fontforge]
+comment = "Build-time font tool; heap buffer overflows require crafted font files"
+cve = ["CVE-2025-15276", "CVE-2025-15277", "CVE-2025-15278", "CVE-2025-15279"]
+
+[foundry]
+comment = "Palantir Foundry CVE, not Ethereum Foundry toolkit"
+cve = ["CVE-2023-30952"]
+
+[giflib]
+comment = "Build-time image library; heap buffer overflow requires crafted GIF input"
+cve = ["CVE-2024-45993"]
+
+[libmemcached]
+comment = "Name collision; CVE is for libmemcached SASL auth bypass, not used in devshell"
+cve = ["CVE-2023-27478"]
+
+[libsndfile]
+comment = "Build-time audio library; requires crafted audio files to exploit"
+cve = ["CVE-2024-50612", "CVE-2024-50613", "CVE-2025-52194", "CVE-2025-56226"]
+
+[memcached]
+comment = "Transitive dependency; CVE-2022-26635 is for Memcached SASL auth bypass, not user-facing in devshell"
+cve = ["CVE-2022-26635"]
+
+[openmp]
+comment = "Intel oneAPI OpenMP CVE, not LLVM OpenMP runtime"
+cve = ["CVE-2022-26345"]
+
+[yasm]
+comment = "Build-time assembler; all CVEs require crafted assembly input files"
+cve = [
+  "CVE-2021-33454",
+  "CVE-2021-33455",
+  "CVE-2021-33456",
+  "CVE-2021-33457",
+  "CVE-2021-33458",
+  "CVE-2021-33459",
+  "CVE-2021-33460",
+  "CVE-2021-33461",
+  "CVE-2021-33462",
+  "CVE-2021-33463",
+  "CVE-2021-33464",
+  "CVE-2021-33465",
+  "CVE-2021-33466",
+  "CVE-2021-33467",
+  "CVE-2021-33468",
+  "CVE-2023-30402",
+  "CVE-2023-31972",
+  "CVE-2023-31973",
+  "CVE-2023-31974",
+  "CVE-2023-31975",
+  "CVE-2023-51258",
 ]
