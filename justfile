@@ -10,7 +10,7 @@ check-vulns:
     #!/usr/bin/env bash
     set -euo pipefail
     system=$(nix eval --impure --raw --expr 'builtins.currentSystem')
-    for shell in default rust go solana; do
+    for shell in default rust go solidity solana; do
         echo "=== Scanning $shell shell ==="
         nix build ".#devShells.${system}.${shell}" -o "result-${shell}"
         vulnix "./result-${shell}" --whitelist vulnix-whitelist.toml
@@ -57,6 +57,6 @@ cache:
     #!/usr/bin/env bash
     set -euo pipefail
     system=$(nix eval --impure --raw --expr 'builtins.currentSystem')
-    for shell in default rust go solana; do
+    for shell in default rust go solidity solana; do
         nix build ".#devShells.${system}.${shell}" && cachix push vaporif ./result
     done
