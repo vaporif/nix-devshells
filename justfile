@@ -58,5 +58,7 @@ cache:
     set -euo pipefail
     system=$(nix eval --impure --raw --expr 'builtins.currentSystem')
     for shell in default rust go solidity solana; do
-        nix build ".#devShells.${system}.${shell}" && cachix push vaporif ./result
+        echo "=== Building and pushing $shell shell ==="
+        nix build ".#devShells.${system}.${shell}" -o "result-${shell}"
+        cachix push vaporif "./result-${shell}"
     done
