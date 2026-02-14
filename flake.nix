@@ -42,12 +42,15 @@
           inherit anchor;
         };
 
-        # Wrap nom to avoid pulling pkgs.nix onto PATH (shadows Determinate Nix)
+        # Wrap tools that depend on pkgs.nix to avoid shadowing Determinate Nix
         nom-wrapped = pkgs.writeShellScriptBin "nom" ''
           exec ${pkgs.nix-output-monitor}/bin/nom "$@"
         '';
+        vulnix-wrapped = pkgs.writeShellScriptBin "vulnix" ''
+          exec ${pkgs.vulnix}/bin/vulnix "$@"
+        '';
 
-        commonPackages = with pkgs; [nixd vulnix alejandra just nom-wrapped];
+        commonPackages = with pkgs; [nixd alejandra just nom-wrapped vulnix-wrapped];
       in {
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
