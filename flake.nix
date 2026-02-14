@@ -42,7 +42,12 @@
           inherit anchor;
         };
 
-        commonPackages = with pkgs; [nixd vulnix alejandra just nix-output-monitor];
+        # Wrap nom to avoid pulling pkgs.nix onto PATH (shadows Determinate Nix)
+        nom-wrapped = pkgs.writeShellScriptBin "nom" ''
+          exec ${pkgs.nix-output-monitor}/bin/nom "$@"
+        '';
+
+        commonPackages = with pkgs; [nixd vulnix alejandra just nom-wrapped];
       in {
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
