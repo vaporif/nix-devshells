@@ -80,5 +80,6 @@ in {
 
   shellHook = ''
     export PATH=$HOME/.cargo/bin:$PATH
+    echo "rust: ${selectedChannel}"
   '';
 }
