@@ -3,11 +3,23 @@
   channel ? null,
 }: let
   envChannel = builtins.getEnv "RUST_CHANNEL";
+  pwd = builtins.getEnv "PWD";
+
+  # Auto-detect from rust-toolchain.toml or rust-toolchain in PWD (requires --impure)
+  detectedChannel =
+    if pwd != "" && builtins.pathExists "${pwd}/rust-toolchain.toml"
+    then (builtins.fromTOML (builtins.readFile "${pwd}/rust-toolchain.toml")).toolchain.channel or "stable"
+    else if pwd != "" && builtins.pathExists "${pwd}/rust-toolchain"
+    then builtins.replaceStrings ["\n" "\r" " "] ["" "" ""] (builtins.readFile "${pwd}/rust-toolchain")
+    else null;
+
   selectedChannel =
     if channel != null
     then channel
     else if envChannel != ""
     then envChannel
+    else if detectedChannel != null
+    then detectedChannel
     else "stable";
 
   rust =
