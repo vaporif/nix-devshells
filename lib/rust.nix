@@ -1,33 +1,5 @@
-{
-  pkgs,
-  channel ? null,
-}: let
-  envChannel = builtins.getEnv "RUST_CHANNEL";
-  pwd = builtins.getEnv "PWD";
-
-  # Auto-detect from rust-toolchain.toml or rust-toolchain in PWD (requires --impure)
-  detectedChannel =
-    if pwd != "" && builtins.pathExists "${pwd}/rust-toolchain.toml"
-    then (builtins.fromTOML (builtins.readFile "${pwd}/rust-toolchain.toml")).toolchain.channel or "stable"
-    else if pwd != "" && builtins.pathExists "${pwd}/rust-toolchain"
-    then builtins.replaceStrings ["\n" "\r" " "] ["" "" ""] (builtins.readFile "${pwd}/rust-toolchain")
-    else null;
-
-  selectedChannel =
-    if channel != null
-    then channel
-    else if envChannel != ""
-    then envChannel
-    else if detectedChannel != null
-    then detectedChannel
-    else "stable";
-
-  rust =
-    if selectedChannel == "nightly"
-    then pkgs.fenix.latest
-    else if selectedChannel == "stable"
-    then pkgs.fenix.stable
-    else pkgs.fenix.toolchains.${selectedChannel} or pkgs.fenix.stable;
+{pkgs}: let
+  rust = pkgs.fenix.stable;
 
   toolchain = pkgs.fenix.combine [
     (rust.withComponents [
@@ -92,6 +64,5 @@ in {
 
   shellHook = ''
     export PATH=$HOME/.cargo/bin:$PATH
-    echo "rust: ${selectedChannel}"
   '';
 }

@@ -67,13 +67,6 @@
             }
             // rust.env;
 
-          auto =
-            pkgs.mkShell {
-              packages = rust.packages ++ go.packages ++ commonPackages;
-              shellHook = rust.shellHook + go.shellHook;
-            }
-            // rust.env;
-
           rust =
             pkgs.mkShell {
               packages = rust.packages ++ commonPackages;
