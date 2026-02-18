@@ -1,5 +1,22 @@
-{pkgs}: let
-  rust = pkgs.fenix.stable;
+{
+  pkgs,
+  channel ? null,
+}: let
+  envChannel = builtins.getEnv "RUST_CHANNEL";
+  selectedChannel =
+    if channel != null
+    then channel
+    else if envChannel != ""
+    then envChannel
+    else "stable";
+
+  rust =
+    if selectedChannel == "nightly"
+    then pkgs.fenix.latest
+    else if selectedChannel == "stable"
+    then pkgs.fenix.stable
+    else pkgs.fenix.toolchains.${selectedChannel} or pkgs.fenix.stable;
+
   toolchain = pkgs.fenix.combine [
     (rust.withComponents [
       "cargo"
