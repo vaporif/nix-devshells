@@ -58,7 +58,7 @@ cve = [
 
 [zlib]
 comment = "untgz demo utility in contrib/, not core zlib compression library"
-cve = ["CVE-2026-22184", "CVE-2023-6992"]
+cve = ["CVE-2026-22184", "CVE-2023-6992", "CVE-2026-27171"]
 
 # Build-time only (not in runtime closure)
 [lapack]
