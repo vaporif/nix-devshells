@@ -207,6 +207,10 @@ cve = ["CVE-2022-26635"]
 comment = "Intel oneAPI OpenMP CVE, not LLVM OpenMP runtime"
 cve = ["CVE-2022-26345"]
 
+[cryptography]
+comment = "SECT curve subgroup attack; devshell only, SECT curves not used"
+cve = ["CVE-2026-26007"]
+
 [yasm]
 comment = "Build-time assembler; all CVEs require crafted assembly input files"
 cve = [
