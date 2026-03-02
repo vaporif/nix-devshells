@@ -207,6 +207,10 @@ cve = ["CVE-2022-26635"]
 comment = "Intel oneAPI OpenMP CVE, not LLVM OpenMP runtime"
 cve = ["CVE-2022-26345"]
 
+[bytes]
+comment = "Build-time only; prefetch-npm-deps transitive dep, integer overflow in BytesMut::reserve, fixed in 1.11.1"
+cve = ["CVE-2026-25541"]
+
 [cryptography]
 comment = "SECT curve subgroup attack; devshell only, SECT curves not used"
 cve = ["CVE-2026-26007"]
