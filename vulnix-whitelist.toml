@@ -84,12 +84,6 @@ cve = [
   "CVE-2023-28320",
   "CVE-2023-28321",
   "CVE-2023-28322",
-  "CVE-2025-13034",
-  "CVE-2025-14017",
-  "CVE-2025-14524",
-  "CVE-2025-14819",
-  "CVE-2025-15079",
-  "CVE-2025-15224",
 ]
 
 [lua]
@@ -137,42 +131,9 @@ cve = [
 ]
 
 # Build-time toolchain
-[binutils]
-comment = "Memory leaks in objdump with crafted input; build-time only, Debian marks unimportant"
-cve = ["CVE-2025-3198", "CVE-2025-8224", "CVE-2025-8225", "CVE-2025-1153"]
-
-[busybox]
-comment = "Nix sandbox internal use only; tar UI spoofing + wget HTTP splitting, not user-facing"
-cve = ["CVE-2025-60876", "CVE-2025-46394"]
-
 [gcc]
 comment = "DISPUTED: -fstack-protector bypass on AArch64 only; doesn't create vulns, reduces protection"
 cve = ["CVE-2023-4039"]
-
-[glibc]
-comment = "strcmp/strncmp bugs only on IBM Power10 CPUs; not applicable to x86_64/aarch64"
-cve = ["CVE-2025-5702", "CVE-2025-5745"]
-
-[libmicrohttpd]
-comment = "NULL deref + heap overflow; Nix daemon HTTP API binds localhost only, requires local access"
-cve = ["CVE-2025-59777", "CVE-2025-62689"]
-
-[openssl]
-comment = "Devshell only; upgrade to 3.6.1+ when available in nixpkgs"
-cve = [
-  "CVE-2025-11187",
-  "CVE-2025-15467",
-  "CVE-2025-15468",
-  "CVE-2025-15469",
-  "CVE-2025-66199",
-  "CVE-2025-68160",
-  "CVE-2025-69418",
-  "CVE-2025-69419",
-  "CVE-2025-69420",
-  "CVE-2025-69421",
-  "CVE-2026-22795",
-  "CVE-2026-22796",
-]
 
 # Solidity shell dependencies - name collisions and build-time
 [ada]
@@ -181,7 +142,7 @@ cve = ["CVE-2024-9410"]
 
 [fontforge]
 comment = "Build-time font tool; heap buffer overflows require crafted font files"
-cve = ["CVE-2025-15276", "CVE-2025-15277", "CVE-2025-15278", "CVE-2025-15279"]
+cve = ["CVE-2025-15276", "CVE-2025-15277", "CVE-2025-15278"]
 
 [foundry]
 comment = "Palantir Foundry CVE, not Ethereum Foundry toolkit"
