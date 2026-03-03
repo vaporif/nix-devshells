@@ -131,9 +131,41 @@ cve = [
 ]
 
 # Build-time toolchain
+[binutils]
+comment = "Build-time toolchain; memory corruption and buffer overflows require crafted object files with local access"
+cve = [
+  "CVE-2025-5244",
+  "CVE-2025-5245",
+  "CVE-2025-0840",
+  "CVE-2025-3198",
+  "CVE-2025-8224",
+  "CVE-2025-8225",
+  "CVE-2025-1153",
+]
+
+[busybox]
+comment = "Build-time utility; wget header injection and tar escape sequence hiding, not user-facing in devshell"
+cve = ["CVE-2025-60876", "CVE-2025-46394"]
+
 [gcc]
-comment = "DISPUTED: -fstack-protector bypass on AArch64 only; doesn't create vulns, reduces protection"
-cve = ["CVE-2023-4039"]
+comment = "DISPUTED: -fstack-protector bypass on AArch64; use-after-free in c++filt requires crafted input"
+cve = ["CVE-2023-4039", "CVE-2021-37322"]
+
+[glibc]
+comment = "System C library from nixpkgs; integer overflow in alignment, wordexp uninit memory, DNS stack leak"
+cve = ["CVE-2026-0861", "CVE-2025-15281", "CVE-2026-0915"]
+
+[gzip]
+comment = "Build-time compression tool; zgrep arbitrary file write via crafted multi-line filenames"
+cve = ["CVE-2022-1271"]
+
+[libmicrohttpd]
+comment = "Transitive dependency; null pointer dereference DoS via crafted packets, not user-facing in devshell"
+cve = ["CVE-2025-59777", "CVE-2025-62689"]
+
+[musl]
+comment = "Build-time C library for static builds; out-of-bounds write in iconv EUC-KR to UTF-8 conversion"
+cve = ["CVE-2025-26519"]
 
 # Solidity shell dependencies - name collisions and build-time
 [ada]
