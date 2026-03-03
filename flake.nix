@@ -21,6 +21,10 @@
           path = ./templates/rust;
           description = "Rust workspace with devshell";
         };
+        go = {
+          path = ./templates/go;
+          description = "Go project with devshell";
+        };
         solana = {
           path = ./templates/solana;
           description = "Solana Anchor workspace with devshell";

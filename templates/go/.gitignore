@@ -1,0 +1,31 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of go coverage
+*.out
+
+# Go workspace sum
+go.work.sum
+
+# Vendor directory
+vendor/
+
+# Build output
+bin/
+dist/
+
+# Files
+.DS_Store
+
+# IDE files
+.idea/
+*.iml
+*.code-workspace
+.vscode

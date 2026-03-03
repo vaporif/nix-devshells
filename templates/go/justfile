@@ -1,0 +1,51 @@
+set dotenv-load
+
+# Default task lists all available tasks
+default:
+    just --list
+
+# Build the project
+[group('build')]
+build *args:
+    go build {{args}} ./...
+
+# Run tests
+[group('test')]
+test *args:
+    gotestsum {{args}} -- -race ./...
+
+# Lint code
+[group('lint')]
+lint:
+    gofumpt -l -d .
+    golangci-lint run ./...
+
+# Lint GitHub Actions
+[group('lint')]
+lint-actions:
+    actionlint
+
+# Format code
+[group('lint')]
+fmt:
+    gofumpt -w .
+
+# Clean build artifacts
+[group('clean')]
+clean:
+    go clean ./...
+
+# Run the project
+[group('run')]
+run *args:
+    go run ./cmd/my-app {{args}}
+
+# Watch for changes
+[group('run')]
+watch:
+    air
+
+# Add a new module to the workspace
+[group('workspace')]
+work-use path:
+    go work use {{path}}
