@@ -56,6 +56,10 @@ cve = [
   "CVE-2025-22873",
 ]
 
+[python]
+comment = "VS Code Python extension CVEs, not CPython interpreter"
+cve = ["CVE-2024-49050", "CVE-2025-49714"]
+
 [zlib]
 comment = "untgz demo utility in contrib/, not core zlib compression library"
 cve = ["CVE-2026-22184", "CVE-2023-6992", "CVE-2026-27171"]
