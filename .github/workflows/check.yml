@@ -19,6 +19,8 @@ jobs:
             system: aarch64-darwin
           - os: ubuntu-latest
             system: x86_64-linux
+          - os: ubuntu-24.04-arm
+            system: aarch64-linux
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -48,6 +50,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
