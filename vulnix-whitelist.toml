@@ -208,6 +208,10 @@ cve = ["CVE-2022-26345"]
 comment = "Build-time only; prefetch-npm-deps transitive dep, integer overflow in BytesMut::reserve, fixed in 1.11.1"
 cve = ["CVE-2026-25541"]
 
+[filelock]
+comment = "Python filelock package CVEs, not Haskell filelock library"
+cve = ["CVE-2025-68146", "CVE-2026-22701"]
+
 [cryptography]
 comment = "SECT curve subgroup attack; devshell only, SECT curves not used"
 cve = ["CVE-2026-26007"]
