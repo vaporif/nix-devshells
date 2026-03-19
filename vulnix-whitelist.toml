@@ -136,7 +136,7 @@ cve = [
 
 # Build-time toolchain
 [binutils]
-comment = "Build-time toolchain; memory corruption and buffer overflows require crafted object files with local access"
+comment = "Build-time toolchain; readelf DoS and memory corruption require crafted object files with local access"
 cve = [
   "CVE-2025-5244",
   "CVE-2025-5245",
@@ -145,6 +145,13 @@ cve = [
   "CVE-2025-8224",
   "CVE-2025-8225",
   "CVE-2025-1153",
+  "CVE-2025-69644",
+  "CVE-2025-69647",
+  "CVE-2025-69648",
+  "CVE-2025-69649",
+  "CVE-2025-69650",
+  "CVE-2025-69651",
+  "CVE-2025-69652",
 ]
 
 [busybox]
