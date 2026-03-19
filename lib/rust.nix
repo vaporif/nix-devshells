@@ -33,6 +33,7 @@ in {
     pkg-config
     openssl
     openssl.dev
+    libiconv
     taplo
     toolchain
     sccache
