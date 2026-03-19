@@ -13,7 +13,7 @@
   hidapi,
   udev,
   llvmPackages,
-  fenix,
+  rust-bin,
   writeShellApplication,
   makeWrapper,
   anchor,
@@ -35,24 +35,15 @@
   platformToolsVersion = "v1.52";
   system = stdenv.hostPlatform.system;
 
-  mkRustToolchain = {
-    channel,
-    sha256,
-    date ? null,
-  }:
-    (fenix.toolchainOf ({inherit channel sha256;} // lib.optionalAttrs (date != null) {inherit date;}))
-    .withComponents ["cargo" "rustc" "rust-src"];
+  mkRustToolchain = version:
+    rust-bin.stable.${version}.default.override {
+      extensions = ["rust-src"];
+    };
 
   # Rust 1.89.0+ required for IDL generation (Span::local_file was stabilized)
-  rustIdl = mkRustToolchain {
-    channel = "1.89.0";
-    sha256 = "sha256-+9FmLhAOezBZCOziO0Qct1NOrfpjNsXxc/8I0c7BdKE=";
-  };
+  rustIdl = mkRustToolchain "1.89.0";
 
-  rustForAgave = mkRustToolchain {
-    channel = "1.86.0";
-    sha256 = "sha256-X/4ZBHO3iW0fOenQ3foEvscgAPJYl2abspaBThDOukI=";
-  };
+  rustForAgave = mkRustToolchain "1.86.0";
 
   platformArchives = {
     x86_64-darwin = {

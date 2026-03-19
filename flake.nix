@@ -4,13 +4,13 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    fenix.url = "github:nix-community/fenix";
-    fenix.inputs.nixpkgs.follows = "nixpkgs";
+    rust-overlay.url = "github:oxalica/rust-overlay";
+    rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {
     flake-parts,
-    fenix,
+    rust-overlay,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
@@ -42,7 +42,7 @@
 
         anchor = pkgs.callPackage ./pkgs/anchor.nix {};
         solana-agave = pkgs.callPackage ./pkgs/agave.nix {
-          inherit (pkgs) fenix;
+          inherit (pkgs) rust-bin;
           inherit anchor;
         };
 
@@ -58,7 +58,7 @@
       in {
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
-          overlays = [fenix.overlays.default];
+          overlays = [rust-overlay.overlays.default];
         };
 
         formatter = pkgs.alejandra;

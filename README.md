@@ -21,7 +21,7 @@ nix flake init -t github:vaporif/nix-devshells#solana
 | Shell | Description |
 |-------|-------------|
 | `default` | Rust + Go combined |
-| `rust` | Rust stable via fenix with cargo tools |
+| `rust` | Rust stable via oxalica with cargo tools |
 | `go` | Go with gopls, delve, golangci-lint |
 | `solana` | Rust + Agave CLI + Anchor |
 

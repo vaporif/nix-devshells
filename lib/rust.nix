@@ -1,16 +1,11 @@
 {pkgs}: let
-  rust = pkgs.fenix.stable;
-
-  toolchain = pkgs.fenix.combine [
-    (rust.withComponents [
-      "cargo"
+  toolchain = pkgs.rust-bin.stable.latest.default.override {
+    extensions = [
       "clippy"
-      "rustc"
-      "rustfmt"
       "rust-analyzer"
       "rust-src"
-    ])
-  ];
+    ];
+  };
 
   # Wrap codelldb only on Darwin, auto-detect debugserver path
   codelldb =
@@ -57,7 +52,7 @@ in {
   ];
 
   env = {
-    RUST_SRC_PATH = "${rust.rust-src}/lib/rustlib/src/rust/library";
+    RUST_SRC_PATH = "${toolchain}/lib/rustlib/src/rust/library";
     RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
     NIX_LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [pkgs.stdenv.cc.cc];
   };
