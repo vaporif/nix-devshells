@@ -4,6 +4,7 @@
       "clippy"
       "rust-analyzer"
       "rust-src"
+      "llvm-tools"
     ];
   };
 
@@ -46,6 +47,7 @@ in {
     cargo-mutants
     cargo-machete
     cargo-pgo
+    cargo-llvm-cov
     tokio-console
     samply
     grpcurl
