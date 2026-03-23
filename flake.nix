@@ -64,19 +64,17 @@
         formatter = pkgs.alejandra;
 
         devShells = {
-          default =
-            pkgs.mkShell {
+          default = pkgs.mkShell ({
               packages = rust.packages ++ go.packages ++ commonPackages;
               shellHook = rust.shellHook + go.shellHook;
             }
-            // rust.env;
+            // rust.env);
 
-          rust =
-            pkgs.mkShell {
+          rust = pkgs.mkShell ({
               packages = rust.packages ++ commonPackages;
               shellHook = rust.shellHook;
             }
-            // rust.env;
+            // rust.env);
 
           go = pkgs.mkShell {
             packages = go.packages ++ commonPackages;
