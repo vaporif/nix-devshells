@@ -28,39 +28,35 @@
       ''
     else pkgs.vscode-extensions.vadimcn.vscode-lldb.adapter;
 in {
-  packages = with pkgs;
-    [
-      cargo-make
-      pkg-config
-      openssl
-      openssl.dev
-      taplo
-      toolchain
-      sccache
-      codelldb
-      cargo-watch
-      cargo-nextest
-      cargo-audit
-      bacon
-      cargo-expand
-      cargo-flamegraph
-      cargo-outdated
-      cargo-deny
-      cargo-bloat
-      cargo-udeps
-      cargo-criterion
-      cargo-mutants
-      cargo-machete
-      cargo-pgo
-      tokio-console
-      samply
-      grpcurl
-      clang
-      libclang
-    ]
-    ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
-      glibc.dev
-    ];
+  packages = with pkgs; [
+    cargo-make
+    pkg-config
+    openssl
+    openssl.dev
+    taplo
+    toolchain
+    sccache
+    codelldb
+    cargo-watch
+    cargo-nextest
+    cargo-audit
+    bacon
+    cargo-expand
+    cargo-flamegraph
+    cargo-outdated
+    cargo-deny
+    cargo-bloat
+    cargo-udeps
+    cargo-criterion
+    cargo-mutants
+    cargo-machete
+    cargo-pgo
+    tokio-console
+    samply
+    grpcurl
+    clang
+    libclang
+  ];
 
   env =
     {
@@ -71,8 +67,11 @@ in {
     }
     // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
       BINDGEN_EXTRA_CLANG_ARGS = "-I${pkgs.glibc.dev}/include";
-      NIX_CFLAGS_COMPILE = "-I${pkgs.glibc.dev}/include";
     };
+
+  buildInputs = pkgs.lib.optionals pkgs.stdenv.isLinux [
+    pkgs.glibc.dev
+  ];
 
   shellHook = ''
     export PATH=$HOME/.cargo/bin:$PATH

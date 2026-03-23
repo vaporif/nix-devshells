@@ -66,12 +66,14 @@
         devShells = {
           default = pkgs.mkShell ({
               packages = rust.packages ++ go.packages ++ commonPackages;
+              inherit (rust) buildInputs;
               shellHook = rust.shellHook + go.shellHook;
             }
             // rust.env);
 
           rust = pkgs.mkShell ({
               packages = rust.packages ++ commonPackages;
+              inherit (rust) buildInputs;
               shellHook = rust.shellHook;
             }
             // rust.env);
@@ -97,6 +99,7 @@
                 ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
                   pkgs.apple-sdk_15
                 ];
+              inherit (rust) buildInputs;
               shellHook =
                 rust.shellHook
                 + ''
