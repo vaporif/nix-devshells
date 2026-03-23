@@ -67,6 +67,8 @@ in {
     }
     // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
       BINDGEN_EXTRA_CLANG_ARGS = "-I${pkgs.glibc.dev}/include";
+      CC = "${pkgs.stdenv.cc}/bin/cc";
+      CXX = "${pkgs.stdenv.cc}/bin/c++";
     };
 
   buildInputs = pkgs.lib.optionals pkgs.stdenv.isLinux [
