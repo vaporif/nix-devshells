@@ -55,7 +55,6 @@ in {
     samply
     grpcurl
     clang
-    libclang
   ];
 
   env =
@@ -70,10 +69,6 @@ in {
       CC = "${pkgs.stdenv.cc}/bin/cc";
       CXX = "${pkgs.stdenv.cc}/bin/c++";
     };
-
-  buildInputs = pkgs.lib.optionals pkgs.stdenv.isLinux [
-    pkgs.glibc.dev
-  ];
 
   shellHook = ''
     export PATH=$HOME/.cargo/bin:$PATH
