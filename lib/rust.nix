@@ -28,39 +28,50 @@
       ''
     else pkgs.vscode-extensions.vadimcn.vscode-lldb.adapter;
 in {
-  packages = with pkgs; [
-    cargo-make
-    pkg-config
-    openssl
-    openssl.dev
-    taplo
-    toolchain
-    sccache
-    codelldb
-    cargo-watch
-    cargo-nextest
-    cargo-audit
-    bacon
-    cargo-expand
-    cargo-flamegraph
-    cargo-outdated
-    cargo-deny
-    cargo-bloat
-    cargo-udeps
-    cargo-criterion
-    cargo-mutants
-    cargo-machete
-    cargo-pgo
-    tokio-console
-    samply
-    grpcurl
-  ];
+  packages = with pkgs;
+    [
+      cargo-make
+      pkg-config
+      openssl
+      openssl.dev
+      taplo
+      toolchain
+      sccache
+      codelldb
+      cargo-watch
+      cargo-nextest
+      cargo-audit
+      bacon
+      cargo-expand
+      cargo-flamegraph
+      cargo-outdated
+      cargo-deny
+      cargo-bloat
+      cargo-udeps
+      cargo-criterion
+      cargo-mutants
+      cargo-machete
+      cargo-pgo
+      tokio-console
+      samply
+      grpcurl
+      clang
+      libclang
+    ]
+    ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+      glibc.dev
+    ];
 
-  env = {
-    RUST_SRC_PATH = "${rust.rust-src}/lib/rustlib/src/rust/library";
-    RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
-    NIX_LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [pkgs.stdenv.cc.cc];
-  };
+  env =
+    {
+      RUST_SRC_PATH = "${rust.rust-src}/lib/rustlib/src/rust/library";
+      RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
+      NIX_LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [pkgs.stdenv.cc.cc];
+      LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
+    }
+    // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
+      BINDGEN_EXTRA_CLANG_ARGS = "-I${pkgs.glibc.dev}/include";
+    };
 
   shellHook = ''
     export PATH=$HOME/.cargo/bin:$PATH
