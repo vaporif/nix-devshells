@@ -71,6 +71,7 @@ in {
     }
     // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
       BINDGEN_EXTRA_CLANG_ARGS = "-I${pkgs.glibc.dev}/include";
+      NIX_CFLAGS_COMPILE = "-I${pkgs.glibc.dev}/include";
     };
 
   shellHook = ''
