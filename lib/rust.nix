@@ -67,6 +67,9 @@ in {
     }
     // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
       BINDGEN_EXTRA_CLANG_ARGS = "-I${pkgs.glibc.dev}/include";
+    }
+    // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
+      BINDGEN_EXTRA_CLANG_ARGS = "--sysroot=${pkgs.apple-sdk_26.sdkroot}";
     };
 
   buildInputs = pkgs.lib.optionals pkgs.stdenv.isLinux [
