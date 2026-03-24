@@ -55,7 +55,6 @@ in {
     samply
     grpcurl
     clang
-    libclang
   ];
 
   env =
@@ -70,11 +69,9 @@ in {
     }
     // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
       BINDGEN_EXTRA_CLANG_ARGS = "--sysroot=${pkgs.apple-sdk_26.sdkroot}";
+      CC = "${pkgs.stdenv.cc}/bin/cc";
+      CXX = "${pkgs.stdenv.cc}/bin/c++";
     };
-
-  buildInputs = pkgs.lib.optionals pkgs.stdenv.isLinux [
-    pkgs.glibc.dev
-  ];
 
   shellHook = ''
     export PATH=$HOME/.cargo/bin:$PATH
