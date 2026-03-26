@@ -4,7 +4,7 @@
   fetchFromGitHub,
   symlinkJoin,
   fetchurl,
-  rustPlatform,
+  craneLib,
   pkg-config,
   openssl,
   zlib,
@@ -54,6 +54,8 @@
     sha256 = "sha256-X/4ZBHO3iW0fOenQ3foEvscgAPJYl2abspaBThDOukI=";
   };
 
+  craneLibAgave = craneLib.overrideToolchain rustForAgave;
+
   platformArchives = {
     x86_64-darwin = {
       name = "platform-tools-osx-x86_64.tar.bz2";
@@ -90,6 +92,14 @@
     '';
   };
 
+  agaveSrc = fetchFromGitHub {
+    owner = "anza-xyz";
+    repo = "agave";
+    rev = "v${version}";
+    hash = "sha256-pIvShCRy1OQcFwSkXZ/lLF+2LoAd2wyAQfyyUtj9La0=";
+    fetchSubmodules = true;
+  };
+
   sbfSdk = stdenv.mkDerivation {
     pname = "sbf-sdk";
     inherit version;
@@ -101,60 +111,55 @@
       mkdir -p $out/dependencies
       tar -xjf $src -C $out
       ln -s ${platformTools} $out/dependencies/platform-tools
-      if [ -d "${agave.src}/platform-tools-sdk/sbf/scripts" ]; then
+      if [ -d "${agaveSrc}/platform-tools-sdk/sbf/scripts" ]; then
         mkdir -p $out/scripts
-        cp -r ${agave.src}/platform-tools-sdk/sbf/scripts/* $out/scripts/
+        cp -r ${agaveSrc}/platform-tools-sdk/sbf/scripts/* $out/scripts/
         chmod +x $out/scripts/*.sh 2>/dev/null || true
       fi
       [ -f "$out/sbf-sdk/env.sh" ] && ln -s $out/sbf-sdk/env.sh $out/env.sh
     '';
   };
 
-  agave =
-    rustPlatform.buildRustPackage.override {
-      rustc = rustForAgave;
-      cargo = rustForAgave;
-    } {
-      pname = "agave";
-      inherit version;
+  commonArgs = {
+    pname = "agave";
+    inherit version;
+    src = agaveSrc;
+    strictDeps = true;
 
-      src = fetchFromGitHub {
-        owner = "anza-xyz";
-        repo = "agave";
-        rev = "v${version}";
-        hash = "sha256-pIvShCRy1OQcFwSkXZ/lLF+2LoAd2wyAQfyyUtj9La0=";
-        fetchSubmodules = true;
-      };
+    cargoBuildFlags = map (n: "--bin=${n}") solanaPkgs;
 
-      cargoHash = "sha256-eendPKd1oZmVqWAGWxm+AayLDm5w9J6/gSEPUXJZj88=";
-      cargoBuildFlags = map (n: "--bin=${n}") solanaPkgs;
+    nativeBuildInputs = [pkg-config protobuf perl llvmPackages.clang];
 
-      nativeBuildInputs = [pkg-config protobuf perl llvmPackages.clang];
+    buildInputs =
+      [openssl zlib llvmPackages.libclang.lib]
+      ++ lib.optionals stdenv.isLinux [hidapi udev];
 
-      buildInputs =
-        [openssl zlib llvmPackages.libclang.lib]
-        ++ lib.optionals stdenv.isLinux [hidapi udev];
+    LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
 
-      LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
+    BINDGEN_EXTRA_CLANG_ARGS = toString ([
+        "-isystem ${llvmPackages.libclang.lib}/lib/clang/${lib.getVersion llvmPackages.clang}/include"
+      ]
+      ++ lib.optionals stdenv.isLinux ["-isystem ${stdenv.cc.libc.dev}/include"]
+      ++ lib.optionals stdenv.isDarwin ["-isystem ${stdenv.cc.libc}/include"]);
 
-      # GCC 15 requires explicit cstdint include for C++ (rocksdb build fix)
-      # Use CXXFLAGS not NIX_CFLAGS_COMPILE to avoid breaking C builds (blake3)
-      preBuild = lib.optionalString stdenv.isLinux ''
-        export CXXFLAGS="-include cstdint ''${CXXFLAGS:-}"
-      '';
+    # GCC 15 requires explicit cstdint include for C++ (rocksdb build fix)
+    # Use CXXFLAGS not NIX_CFLAGS_COMPILE to avoid breaking C builds (blake3)
+    preBuild = lib.optionalString stdenv.isLinux ''
+      export CXXFLAGS="-include cstdint ''${CXXFLAGS:-}"
+    '';
 
-      BINDGEN_EXTRA_CLANG_ARGS = toString ([
-          "-isystem ${llvmPackages.libclang.lib}/lib/clang/${lib.getVersion llvmPackages.clang}/include"
-        ]
-        ++ lib.optionals stdenv.isLinux ["-isystem ${stdenv.cc.libc.dev}/include"]
-        ++ lib.optionals stdenv.isDarwin ["-isystem ${stdenv.cc.libc}/include"]);
+    postPatch = ''
+      substituteInPlace scripts/cargo-install-all.sh \
+        --replace-fail './fetch-perf-libs.sh' 'echo "Skipping fetch-perf-libs in Nix build"' \
+        --replace-fail '"$cargo" $maybeRustVersion install' 'echo "Skipping cargo install"'
+    '';
+  };
 
-      postPatch = ''
-        substituteInPlace scripts/cargo-install-all.sh \
-          --replace-fail './fetch-perf-libs.sh' 'echo "Skipping fetch-perf-libs in Nix build"' \
-          --replace-fail '"$cargo" $maybeRustVersion install' 'echo "Skipping cargo install"'
-      '';
+  cargoArtifacts = craneLibAgave.buildDepsOnly commonArgs;
 
+  agave = craneLibAgave.buildPackage (commonArgs
+    // {
+      inherit cargoArtifacts;
       doCheck = false;
 
       meta = {
@@ -163,7 +168,7 @@
         license = lib.licenses.asl20;
         platforms = lib.platforms.unix;
       };
-    };
+    });
 
   anchorNix = symlinkJoin {
     name = "anchor-nix";

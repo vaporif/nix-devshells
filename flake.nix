@@ -6,11 +6,13 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     fenix.url = "github:nix-community/fenix";
     fenix.inputs.nixpkgs.follows = "nixpkgs";
+    crane.url = "github:ipetkov/crane";
   };
 
   outputs = inputs @ {
     flake-parts,
     fenix,
+    crane,
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
@@ -40,10 +42,12 @@
         go = import ./lib/go.nix {inherit pkgs;};
         solidity = import ./lib/solidity.nix {inherit pkgs;};
 
-        anchor = pkgs.callPackage ./pkgs/anchor.nix {};
+        craneLib = crane.mkLib pkgs;
+
+        anchor = pkgs.callPackage ./pkgs/anchor.nix {inherit craneLib;};
         solana-agave = pkgs.callPackage ./pkgs/agave.nix {
           inherit (pkgs) fenix;
-          inherit anchor;
+          inherit craneLib anchor;
         };
 
         # Wrap tools that depend on pkgs.nix to avoid shadowing Determinate Nix
