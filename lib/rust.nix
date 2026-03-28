@@ -51,6 +51,9 @@ in {
     cargo-mutants
     cargo-machete
     cargo-pgo
+    cargo-depgraph
+    cargo-modules
+    rust-code-analysis
     tokio-console
     samply
     grpcurl
