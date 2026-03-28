@@ -9,6 +9,7 @@ extend-ignore-re = [
 [default.extend-words]
 # Add allowed words here
 sbf = "sbf" # Solana BPF format
+Hashi = "Hashi" # HashiCorp
 
 [files]
 extend-exclude = ["*.lock", "flake.lock", ".git/", "target/"]
