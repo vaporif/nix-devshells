@@ -3,13 +3,13 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    devshells.url = "github:vaporif/nix-devshells";
-    devshells.inputs.nixpkgs.follows = "nixpkgs";
+    anchor-overlay.url = "github:vaporif/anchor-overlay";
+    anchor-overlay.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
     nixpkgs,
-    devshells,
+    anchor-overlay,
     ...
   }: let
     systems = ["x86_64-linux" "aarch64-darwin"];
@@ -18,7 +18,7 @@
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
     devShells = forAllSystems (system: {
-      default = devshells.devShells.${system}.solana;
+      default = anchor-overlay.devShells.${system}.default;
     });
   };
 }

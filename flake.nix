@@ -25,10 +25,6 @@
           path = ./templates/go;
           description = "Go project with devshell";
         };
-        solana = {
-          path = ./templates/solana;
-          description = "Solana Anchor workspace with devshell";
-        };
       };
 
       perSystem = {
@@ -39,12 +35,6 @@
         rust = import ./lib/rust.nix {inherit pkgs;};
         go = import ./lib/go.nix {inherit pkgs;};
         solidity = import ./lib/solidity.nix {inherit pkgs;};
-
-        anchor = pkgs.callPackage ./pkgs/anchor.nix {};
-        solana-agave = pkgs.callPackage ./pkgs/agave.nix {
-          inherit (pkgs) fenix;
-          inherit anchor;
-        };
 
         # Wrap tools that depend on pkgs.nix to avoid shadowing Determinate Nix
         nom-wrapped = pkgs.writeShellScriptBin "nom" ''
@@ -85,30 +75,6 @@
             packages = solidity.packages ++ commonPackages;
             shellHook = solidity.shellHook;
           };
-
-          solana = pkgs.mkShell ({
-              packages =
-                rust.packages
-                ++ commonPackages
-                ++ [
-                  pkgs.gawk
-                  solana-agave
-                ]
-                ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
-                  pkgs.apple-sdk_15
-                ];
-              shellHook =
-                rust.shellHook
-                + ''
-                  export PATH="${solana-agave}/bin:$PATH"
-                  if [[ "$OSTYPE" == "darwin"* ]]; then
-                    unset DEVELOPER_DIR_FOR_TARGET
-                    unset NIX_APPLE_SDK_VERSION_FOR_TARGET
-                    unset SDKROOT_FOR_TARGET
-                  fi
-                '';
-            }
-            // rust.env);
         };
       };
     };
