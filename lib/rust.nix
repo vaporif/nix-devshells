@@ -14,7 +14,7 @@
 
   # Wrap codelldb only on Darwin, auto-detect debugserver path
   codelldb =
-    if pkgs.stdenv.isDarwin
+    if pkgs.stdenv.hostPlatform.isDarwin
     then
       pkgs.writeShellScriptBin "codelldb" ''
         if [[ -z "$LLDB_DEBUGSERVER_PATH" ]]; then
@@ -67,10 +67,10 @@ in {
       NIX_LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [pkgs.stdenv.cc.cc];
       LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
     }
-    // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
+    // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
       BINDGEN_EXTRA_CLANG_ARGS = "-I${pkgs.glibc.dev}/include";
     }
-    // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
+    // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
       BINDGEN_EXTRA_CLANG_ARGS = "--sysroot=${pkgs.apple-sdk_26.sdkroot}";
       CC = "${pkgs.stdenv.cc}/bin/cc";
       CXX = "${pkgs.stdenv.cc}/bin/c++";
