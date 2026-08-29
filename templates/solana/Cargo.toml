@@ -46,7 +46,7 @@ anchor-lang = "1.0.0"
 
 # Testing
 mollusk-svm = { version = "0.12.0", default-features = false }
-mollusk-svm-bencher = { version = "0.12.0", default-features = false }
+mollusk-svm-bencher = { version = "0.15.0", default-features = false }
 
 [profile.dev]
 debug = 0
