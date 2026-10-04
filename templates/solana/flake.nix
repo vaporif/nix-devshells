@@ -17,8 +17,14 @@
   in {
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
-    devShells = forAllSystems (system: {
-      default = anchor-overlay.devShells.${system}.default;
+    devShells = forAllSystems (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
+      default = pkgs.mkShell {
+        inputsFrom = [anchor-overlay.devShells.${system}.default];
+        packages = [pkgs.sccache];
+        RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
+      };
     });
   };
 }
